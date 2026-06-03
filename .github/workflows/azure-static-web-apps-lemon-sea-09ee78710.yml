@@ -29,15 +29,19 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
-      - name: Build And Deploy
+        # After the build step, dist/lui888/browser/ exists on the runner.
+        # With skip_app_build: true, Azure deploys directly from app_location
+        # (it ignores output_location). So we point app_location at the
+        # already-built folder.
+      - name: Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LEMON_SEA_09EE78710 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/"
-          output_location: "dist/lui888/browser"
+          app_location: "dist/lui888/browser"
+          output_location: ""
           skip_app_build: true
 
   close_pull_request_job:
